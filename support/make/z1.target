@@ -1,6 +1,6 @@
 PLATFORM = z1
 
-MSP_BSL ?= z1-bsl
+MSP_BSL ?= $(TOSROOT)/tools/platforms/msp430/z1bsl/z1-bsl
 MOTELIST ?= motelist-z1
 
 MSP_BSL_FLAGS = --z1

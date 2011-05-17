@@ -132,7 +132,9 @@ implementation {
     call VREN.makeOutput();
     
     m_short_addr = call ActiveMessageAddress.amAddress();
+
     m_ext_addr = call LocalIeeeEui64.getId();
+
     m_pan = call ActiveMessageAddress.amGroup();
     m_tx_power = CC2420_DEF_RFPOWER;
     m_channel = CC2420_DEF_CHANNEL;
