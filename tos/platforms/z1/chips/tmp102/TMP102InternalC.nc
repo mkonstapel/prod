@@ -33,7 +33,7 @@
  * @author Kaisen Lin
  * @author Phil Buonadonna
  */
-//#include "im2sb.h"
+
 
 configuration TMP102InternalC {
   provides interface Resource[uint8_t id];

@@ -3,8 +3,8 @@
 #define FADSAMPLES 2000
 #define PRINTBUF 20
 
-module FastADCC
-{
+module FastADCC{
+
   uses interface Boot;
   uses interface Leds;
   uses interface Timer<TMilli> as TimerBlink;
@@ -17,8 +17,8 @@ module FastADCC
   uses interface BlockWrite;
   uses interface BlockRead;  
 }
-implementation
-{
+
+implementation{
   
   uint16_t adb[FADSAMPLES];
   uint16_t pb[PRINTBUF];
@@ -40,111 +40,94 @@ implementation
   }
 
   void configureSingle(){
-	error_t e;
-	printfz1("configuring single\n");
-  	e = call adc.configureSingle(&adcconfig);
+    error_t e;
+    printfz1("configuring single\n");
+    e = call adc.configureSingle(&adcconfig);
     if(e != SUCCESS)
-    	showerror();
+      showerror();
     printfz1("error %d\n", e);
   }
   
   void configureMultiple(){
-  	error_t e;
-  	printfz1("configuring multiple\n");
-  	e = call adc.configureMultiple(&adcconfig, adb, FADSAMPLES, 3); 
+    error_t e;
+    printfz1("configuring multiple\n");
+    e = call adc.configureMultiple(&adcconfig, adb, FADSAMPLES, 3); 
     if(e != SUCCESS)
-    	showerror();
+      showerror();
     printfz1("error %d\n", e);
-  
   }
   
   void printadb(){
-  	uint16_t i;
-  	printfz1("printing buffer\n");
-  	for(i = 0; i < FADSAMPLES; i++){
-  		printfz1("adb[%d] = %d\n", i, adb[i]);
-  	}
+    uint16_t i;
+    printfz1("printing buffer\n");
+    for(i = 0; i < FADSAMPLES; i++){
+      printfz1("adb[%d] = %d\n", i, adb[i]);
+    }
   }
   
   void writeadb(){
-  	printfz1("writing adb\n");
-  	call BlockWrite.write(0, adb, FADSAMPLES);
+    printfz1("writing adb\n");
+    call BlockWrite.write(0, adb, FADSAMPLES);
   }
   
-  void readadb(){
+  void readadb(){ }
   
-  }
-  
-  event void Boot.booted()
-  {
+  event void Boot.booted(){
     printfz1_init();
     printfz1("booting\n");
-    
     call Resource.request();
-    
   }
 
-  event void TimerBlink.fired()
-  {
+  event void TimerBlink.fired(){
     call Leds.led0Toggle();
     call Leds.led1Toggle();
     call Leds.led2Toggle();
   }
   
   event void TimerSample.fired(){
-  	error_t e;
-  	printfz1("starting conversion\n");
-  	e = call adc.getData();
-  	printfz1("error %d\n", e);
+    error_t e;
+    printfz1("starting conversion\n");
+    e = call adc.getData();
+    printfz1("error %d\n", e);
   }
   
-  async event void overflow.conversionTimeOverflow(){
- 	
-  }
+  async event void overflow.conversionTimeOverflow(){ }
 
-  async event void overflow.memOverflow(){
-	
-  }
+  async event void overflow.memOverflow(){ }
   
   async event uint16_t *adc.multipleDataReady(uint16_t *buffer, uint16_t numSamples){
-  	printfz1("samples ready\n");
-  	writeadb();
-  	printadb();
-  	return buffer;
+    printfz1("samples ready\n");
+    writeadb();
+    printadb();
+    return buffer;
   }
 
   async event error_t adc.singleDataReady(uint16_t data){
-     //printfz1("sample: %d\n", data);
-     return SUCCESS;
+   //printfz1("sample: %d\n", data);
+    return SUCCESS;
   }   
   
   event void Resource.granted(){
-  	printfz1("Resource granted\n");
+    printfz1("Resource granted\n");
     configureMultiple();
     call TimerSample.startOneShot(1000);
   } 
   
-  event void BlockRead.readDone(storage_addr_t x, void* buf, storage_len_t y, error_t result) {
-
-  }
+  event void BlockRead.readDone(storage_addr_t x, void* buf, storage_len_t y, error_t result) { }
   
-  event void BlockWrite.eraseDone(error_t result) {
-  
-  }
+  event void BlockWrite.eraseDone(error_t result) { }
   
   event void BlockWrite.writeDone(storage_addr_t x, void* buf, storage_len_t y, error_t result) {
-  	printfz1("write done -> %d\n", result);
-  	if (result == SUCCESS){
-  	  printfz1("syncing\n");
+    printfz1("write done -> %d\n", result);
+    if (result == SUCCESS){
+      printfz1("syncing\n");
       call BlockWrite.sync();
     }
   }
   
   event void BlockWrite.syncDone(error_t result) {
-  	printfz1("sync done -> %d\n", result);
+    printfz1("sync done -> %d\n", result);
   }
   
-  event void BlockRead.computeCrcDone(storage_addr_t x, storage_len_t y, uint16_t z, error_t result) {
-  
-  }
+  event void BlockRead.computeCrcDone(storage_addr_t x, storage_len_t y, uint16_t z, error_t result) { }
 }

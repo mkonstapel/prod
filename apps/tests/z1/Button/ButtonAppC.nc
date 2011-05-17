@@ -1,8 +1,6 @@
-configuration ButtonAppC
-{
-}
-implementation
-{
+configuration ButtonAppC { }
+
+implementation {
   components MainC, ButtonC as App;
   App -> MainC.Boot;
   
@@ -11,5 +9,4 @@ implementation
 
   components UserButtonC;
   App.Button -> UserButtonC;
-
 }
