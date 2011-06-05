@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2011 Eric B. Decker
- * Copyright (c) 2010 People Power Co.
+ * Copyright (c) 2009-2010 People Power Co.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,7 +15,7 @@
  *   documentation and/or other materials provided with the
  *   distribution.
  *
- * - Neither the name of the copyright holder nor the names of
+ * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -30,55 +31,58 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * Clock configuration for an MSP430XV2 board.
+ *
+ * @note If changing the rate for SMCLK, also update the UART configuration in
+ * hardware/usci/PlatformSerialP.nc
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
-#ifndef _H_MSP430IAR_H
-#define _H_MSP430IAR_H
-/*
- * We want to remember these just in case the gcc toolchain doesn't
- * pan out.   Remember in main trunk.
- */
+#include "msp430hardware.h"
+#include "Msp430XV2Dco.h"
 
-#ifdef WITH_IAR
-/*
- * Remove any MSPGCC redefines of the IAR intrinsics, and point the GCC
- * versions at them.
- */
-#undef READ_SR
-#undef __get_SR_register
-#define READ_SR __get_SR_register()
-#undef BIC_SR
-#undef __bic_SR_register
-#define BIC_SR(_x) __bic_SR_register(_x)
-#undef BIS_SR
-#undef __bis_SR_register
-#define BIS_SR(_x) __bis_SR_register(_x)
-#undef __bis_SR_register_on_exit
-#undef _BIS_SR_IRQ
-#define _BIS_SR_IRQ(_x) __bis_SR_register_on_exit(_x)
-#undef __bic_SR_register_on_exit
-#undef _BIC_SR_IRQ
-#define _BIC_SR_IRQ(_x) __bic_SR_register_on_exit(_x)
+module Msp430XV2ClockP @safe() {
+  provides {
+    interface Init;
+  }
+  uses {
+    interface Msp430XV2ClockControl;
+  }
+} implementation {
 
 /*
- * Avoid gcc whining about IAR intrinsics by declaring them;
- * but mark them so the mangler script doesn't leave these bogus
- * prototypes in the source for IAR to find.
+ * Determine a default value for the DCO configuration, unless we
+ * already have one.
  */
-#if defined(__GNUC__)
-typedef volatile uint8_t tinyos_iar_msp430reg1_deleteme_t;
-tinyos_iar_msp430reg1_deleteme_t __get_SR_register ();
-tinyos_iar_msp430reg1_deleteme_t __bic_SR_register (uint8_t x);
-tinyos_iar_msp430reg1_deleteme_t __bis_SR_register (uint8_t x);
-tinyos_iar_msp430reg1_deleteme_t __bic_SR_register_on_exit (uint8_t x);
-#endif		/* __GNUC__ */
+#ifndef MSP430XV2_DCO_CONFIG
+/*
+ * If somebody hasn't told us the preferred target DCO, look for it in
+ * the legacy location
+ */
+#ifndef TARGET_DCO_KHZ
+#include "Msp430DcoSpec.h"
+#endif /* TARGET_DCO_KHZ */
 
-/* IAR won't accept array declarations with zero elements */
-#define STATIC_ARRAY_SIZE(_s) (((_s) == 0) ? 1 : (_s))
+/* Pick something based on target DCO */
+#if 4096 == TARGET_DCO_KHZ
+#define MSP430XV2_DCO_CONFIG MSP430XV2_DCO_8MHz_RSEL3
+#else /* TARGET_DCO_KHZ value */
+#define MSP430XV2_DCO_CONFIG MSP430XV2_DCO_8MHz_RSEL3
+#endif /* TARGET_DCO_KHZ value */
+#endif /* MSP430XV2_DCO_CONFIG */
 
-#endif		/* WITH_IAR */
-
-#endif		/* _H_MSP430IAR_H */
+  command error_t Init.init() {
+    atomic {
+      call Msp430XV2ClockControl.configureUnifiedClockSystem(MSP430XV2_DCO_CONFIG);
+      call Msp430XV2ClockControl.configureTimers();
+      call Msp430XV2ClockControl.start32khzTimer();
+      call Msp430XV2ClockControl.startMicroTimer();
+    }
+    return SUCCESS;
+  }
+}
