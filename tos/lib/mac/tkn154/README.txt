@@ -38,6 +38,7 @@ MAC interfaces: tinyos-2.x/tos/lib/mac/tkn154/interfaces
 CC2420 driver: tinyos-2.x/tos/chips/cc2420_tkn154
 TelosB "platform glue" code: tinyos-2.x/tos/platforms/telosb/mac/tkn154
 micaZ "platform glue" code: tinyos-2.x/tos/platforms/micaz/mac/tkn154
+Z1 platform "platform glue" code: tinyos-2.x/tos/platforms/telosb/mac/tkn154
 Example applications: tinyos-2.x/apps/tests/tkn154
 
 Note: TEP3 recommends that interface names "should be mixed case, starting

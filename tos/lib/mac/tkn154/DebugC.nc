@@ -40,7 +40,7 @@ implementation {
   DebugP.Boot -> MainC;
   DebugP.Leds -> LedsC;
 
-#if defined(PLATFORM_TELOSB)
+#if defined(PLATFORM_TELOSB) || defined(PLATFORM_Z1)
   components UserButtonC;
   DebugP.ButtonPressed -> UserButtonC;
 #endif

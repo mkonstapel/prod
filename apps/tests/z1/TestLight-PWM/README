@@ -1,0 +1,17 @@
+Had to add this couple of lines:
+
+       at start of operation:
+       atomic P5OUT |= 0x06;
+
+       when failure detected:
+       atomic P5OUT &= ~0x06;
+       atomic P5REN &= ~0x06;
+
+I don't know WHY the data line was held low by the AMC6821 IC, but it sux, so I had to pull down both the lines (SCLK and DATA), as the I2C bus pulls the REN again, this worked, enabled the system to recover from this issue.
+
+Not a clean fix, but a fix.
+
+TO-DO:
+
+- Using the logical analyzer, see if the IC is holding back the ACK from an incomplete write operation.
+- Maybe I miss to add some more pull-up resistors to the open-drain pins of the AMC6821

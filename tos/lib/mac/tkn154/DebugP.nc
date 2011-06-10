@@ -48,7 +48,7 @@ module DebugP {
   uses {
     interface Boot;
     interface Leds;
-#if defined(PLATFORM_TELOSB)
+#if defined(PLATFORM_TELOSB) || defined(PLATFORM_Z1)
     interface Notify<button_state_t> as ButtonPressed;
 #endif
   }

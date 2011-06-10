@@ -13,7 +13,7 @@ TOSROOT="/home/a-linan/Dropbox/TinyOS-development/mm/msp430/tinyos-2.x/"
 TOSDIR="$TOSROOT/tos"
 CLASSPATH=$CLASSPATH:$TOSROOT/support/sdk/java/tinyos.jar
 MAKERULES="$TOSROOT/support/make/Makerules"
-export PATH=/opt/msp430-z1/bin:$PATH
+ export PATH=/opt/msp430-z1/bin:$PATH
 #export PATH=/opt/msp430-gcc-4.4.5/bin:$PATH
 
 export TOSROOT

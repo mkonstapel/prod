@@ -1,4 +1,4 @@
-PLATFORMS = telosb micaz
+PLATFORMS = telosb micaz z1
 TKN154_PLATFORM_INCLUDE?=$(TOSDIR)/platforms/$(PLATFORM)/mac/tkn154/Makefile.include
 
 CFLAGS += -I$(TOSDIR)/lib/mac/tkn154 \

@@ -11,7 +11,6 @@ implementation {
   App.TestTimer -> TestTimer;
 
   components TSLC;
-  App.TSLSwitch -> TSLC.TSLSwitch;
   App.Light -> TSLC.Light;
 
 }

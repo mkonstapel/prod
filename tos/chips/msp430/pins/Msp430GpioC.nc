@@ -53,5 +53,4 @@ implementation {
   async command bool GeneralIO.isInput() { return call HplGeneralIO.isInput(); }
   async command void GeneralIO.makeOutput() { call HplGeneralIO.makeOutput(); }
   async command bool GeneralIO.isOutput() { return call HplGeneralIO.isOutput(); }
-
 }

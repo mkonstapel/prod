@@ -389,6 +389,9 @@ implementation {
       startTimerA();
       startTimerB();
     }
+    #ifdef PLATFORM_Z1
+      // Set_DCO(DELTA_8MHZ);
+    #endif
     return SUCCESS;
   }
 }
