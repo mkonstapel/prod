@@ -1,0 +1,4 @@
+*.class
+oscilloscope.jar
+Constants.java
+OscilloscopeMsg.java
