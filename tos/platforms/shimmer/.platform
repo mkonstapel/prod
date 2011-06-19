@@ -17,6 +17,8 @@ push( @includes, qw(
   %T/platforms/shimmer/chips/bluetooth
   %T/platforms/shimmer/chips/msp430
   %T/platforms/shimmer/chips/ds2411
+  %T/platforms/shimmer/chips/gsr
+  %T/platforms/shimmer/chips/rmcm01
   %T/platforms/shimmer2/chips/gyro
   %T/chips/cc2420
   %T/chips/cc2420/alarm
@@ -32,6 +34,7 @@ push( @includes, qw(
   %T/chips/cc2420/transmit
   %T/chips/cc2420/unique
   %T/chips/cc2420/security
+  %T/chips/msp430/x1x2/timer
   %T/chips/msp430/x1xxx
   %T/chips/msp430
   %T/chips/msp430/clock_bcs

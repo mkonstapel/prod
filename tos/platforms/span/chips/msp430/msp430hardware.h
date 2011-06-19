@@ -1,5 +1,5 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.  
+/*
+ * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -8,11 +8,13 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
+ *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+ *
+ * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -37,22 +39,28 @@
 #ifndef _H_msp430hardware_h
 #define _H_msp430hardware_h
 
-/*
- * __MSPGCC__ gets defined in the msp430 uniarch toolchain.   This toolchain
- * uses msp430.h instead of io.h to pull in the processor definitions.
- * msp430.h replaces io.h which is deprecated.
- */
-#ifdef __MSPGCC__
+#if defined(__MSPGCC__)
+/* mspgcc */
 #include <msp430.h>
-#else
+#include <legacymsp430.h>
+#else /* __MSPGCC__ */
+/* old mspgcc3, forked mspgcc4 */
 #include <io.h>
+#include <signal.h>
+#endif /* __MSPGCC__ */
+
+#if defined(__msp430x261x) && !defined(__msp430x26x)
+/*
+ * The old 3.2.3 toolchain defined __msp430x261x when compiling for the
+ * 261x series of chips.   The new TI HEADER based toolchains however define
+ * __msp430x26x instead.
+ *
+ * We are migrating to using the newer toolchain and the newer __msp430x26x
+ * define.  For backward compatibility, create the new define too if needed.
+ */
+#define __msp430x26x
 #endif
 
-/*
- * signal.h defines lots of interesting things including dint(), eint() and
- * how to hook interrupts in.
- */
-#include <signal.h>
 #include "msp430regtypes.h"
 #include "Msp430DcoSpec.h"
 
@@ -318,4 +326,4 @@ enum {
   MSP430_PORT_RESISTOR_PULLUP,     /**< Pullup resistor enabled */
 };
 
-#endif//_H_msp430hardware_h
+#endif		//_H_msp430hardware_h

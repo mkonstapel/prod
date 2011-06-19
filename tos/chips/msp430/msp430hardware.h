@@ -10,11 +10,13 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
+
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+
+ * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -41,16 +43,15 @@
 #ifndef _H_msp430hardware_h
 #define _H_msp430hardware_h
 
-/*
- * __MSPGCC__ gets defined in the msp430 uniarch toolchain.   This toolchain
- * uses msp430.h instead of io.h to pull in the processor definitions.
- * msp430.h replaces io.h which is deprecated.
- */
-#ifdef __MSPGCC__
+#if defined(__MSPGCC__)
+/* mspgcc */
 #include <msp430.h>
-#else
+#include <legacymsp430.h>
+#else /* __MSPGCC__ */
+/* old mspgcc3, forked mspgcc4 */
 #include <io.h>
-#endif
+#include <signal.h>
+#endif /* __MSPGCC__ */
 
 #if defined(__msp430x261x) && !defined(__msp430x26x)
 /*
@@ -64,11 +65,6 @@
 #define __msp430x26x
 #endif
 
-/*
- * signal.h defines lots of interesting things including dint(), eint() and
- * how to hook interrupts in.
- */
-#include <signal.h>
 #include "msp430regtypes.h"
 
 /*
@@ -482,7 +478,7 @@ inline void __nesc_enable_interrupt(void) @safe() {
  * using the uint16_t (native width of the msp430) fits in with how interrupts
  * are checked below, see definition of __nesc_atomic_start.
  *
- * This should be checked to verify that it generates minimal code.
+ * This should be checked to verify that it generates minimal code.  It does.
  */
 typedef uint16_t __nesc_atomic_t;
 __nesc_atomic_t  __nesc_atomic_start(void);
@@ -551,4 +547,4 @@ enum {
 #define STATIC_ARRAY_SIZE(_s) (_s)
 #endif	/* STATIC_ARRAY_SIZE */
 
-#endif	/* _H_msp430hardware_h */
+#endif		// _H_msp430hardware_h
